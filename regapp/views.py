@@ -102,20 +102,17 @@ def allUser_follow_list(request):
 def followinguser(request):
     if request.method=='POST':
         try:
-            pid=request.data['id']
-            print(pid)
-            need_data= User.objects.get(id=pid) 
-            print(need_data)
-            current=request.user
-            current_id=current.id
-            print(current_id)
-            current_name=current.username
-            print(current_name)
-            get_user=Profile.objects.get(user=current_id)
-            print(get_user)
-            if not (current_id==pid):
-                if get_user.follow_ing.filter(id=pid).exists():
-                    user=User.objects.get(id=pid)
+            pid=request.data['id'] #get id wanted to follow or unfollow
+            need_data= User.objects.get(id=pid) #get current user object
+            current_id=request.user.id #get current user id
+            get_user=Profile.objects.get(user=current_id)#get current user profile object
+            
+            if not (current_id==pid): #current user cant follow self
+                '''if following field (many to many)have user object that you wanted to follow '''
+                if get_user.follow_ing.filter(id=pid).exists():  
+                    ''' if you have the user in your following list then remove'''
+
+                    user=User.objects.get(id=pid) 
                     get_user.follow_ing.remove(user)
 
                     "remove user"
@@ -148,8 +145,7 @@ def follower_list(request):
         try:
             current_user=request.user
             current_user_id=current_user.id
-            print("gdf")
-           
+
             items = Profile.objects.get(user=current_user_id)
             items_serializer = ProfileSerializer(items)
             return Response(items_serializer.data)
