@@ -148,7 +148,7 @@ def follower_list(request):
         try:
             current_user=request.user
             current_user_id=current_user.id
-            
+            print("gdf")
            
             items = Profile.objects.get(user=current_user_id)
             items_serializer = ProfileSerializer(items)
